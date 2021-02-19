@@ -1,0 +1,19 @@
+apiVersion : apps/v1
+kind: Deployment
+metadata:
+  name: tmjeebesample 
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tmjeebesample
+  template:
+    metadata:
+      labels:
+        app: tmjeebesample 
+    spec:
+      containers:
+        - name: tmjeebesample 
+          image: mytmjeecontainerregistry.azurecr.io/tmjeebesample
+          ports:
+          - containerPort: 8888

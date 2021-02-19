@@ -1,0 +1,67 @@
+# Deploy to Azure Kubernetes Service
+# Build and push image to Azure Container Registry; Deploy to Azure Kubernetes Service
+# https://docs.microsoft.com/azure/devops/pipelines/languages/docker
+
+trigger:
+- master
+
+resources:
+- repo: self
+
+variables:
+
+  # Container registry service connection established during pipeline creation
+  dockerRegistryServiceConnection: '1480525d-70e2-4e11-858e-3883ae288f1b'
+  imageRepository: 'tmjee/be-sample'
+  containerRegistry: 'mytmjeecontainerregistry.azurecr.io'
+  dockerfilePath: '**/Dockerfile'
+  #tag: '$(Build.BuildId)'
+  tag: 'latest'
+  imagePullSecret: 'mytmjeecontainerregistry1983494b-auth'
+
+  # Agent VM image name
+  vmImageName: 'ubuntu-latest'
+
+
+stages:
+- stage: Deploy
+  displayName: Deploy stage
+  jobs:
+  - deployment: Deploy
+    displayName: Deploy
+    pool:
+      vmImage: $(vmImageName)
+    environment: 'tmjeedockercomposeplayground.default'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - task: Bash@3
+            inputs:
+              targetType: 'inline'
+              script: |
+                pwd
+                ls -lart
+              failOnStderr: true
+              noProfile: false
+              noRc: false
+          - task: KubernetesManifest@0
+            displayName: Create imagePullSecret
+            inputs:
+              action: createSecret
+              secretName: $(imagePullSecret)
+              dockerRegistryEndpoint: $(dockerRegistryServiceConnection)
+
+          - task: Kubernetes@1
+            inputs:
+              connectionType: 'Kubernetes Service Connection'
+              kubernetesServiceEndpoint: 'MyKubernetesCluster-default'
+              command: 'apply'
+              arguments: '-f kubernetes.yaml'
+              secretType: 'dockerRegistry'
+              workingDirectory: './'
+              containerRegistryType: 'Azure Container Registry'
+              azureSubscriptionEndpointForSecrets: 'Free Trial(c1eb8d48-4b2a-466d-8484-375303ce8084)'
+              azureContainerRegistry: 'mytmjeecontainerregistry.azurecr.io'
+              secretName: 'secretname'
+
