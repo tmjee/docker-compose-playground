@@ -25,6 +25,6 @@ stages:
       inputs:
         command: build
         dockerfile: '$(Build.SourcesDirectory)/be-sample/docker/dockerfile'
-        buildContext: '${Build.SourcesDirectory}/be-sample'
+        buildContext: '$(Build.SourcesDirectory)/be-sample'
         tags: |
           $(tag)
