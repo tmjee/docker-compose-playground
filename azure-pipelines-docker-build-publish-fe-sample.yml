@@ -11,7 +11,7 @@ resources:
 variables:
   # Container registry service connection established during pipeline creation
   dockerRegistryServiceConnection: '39ad0fef-26b4-46a5-9bdb-b802267f1cca'
-  imageRepository: 'tmjeefesample'
+  imageRepository: 'tmjee/fe-sample'
   containerRegistry: 'mytmjeecontainerregistry.azurecr.io'
   dockerfilePath: '$(Build.SourcesDirectory)/fe-sample/docker/dockerfile'
   dockerBuildContext: '$(Build.SourcesDirectory)/fe-sample/'
