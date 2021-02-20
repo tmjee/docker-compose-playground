@@ -32,7 +32,12 @@ stages:
     - task: Npm@1
       inputs:
         command: 'custom'
-        customCommand: 'install && npm run build'
+        customCommand: 'install'
+        workingDir: 'fe-sample'
+    - task: Npm@1
+      inputs:
+        command: 'custom'
+        customCommand: 'run build'
         workingDir: 'fe-sample'
     - task: Docker@2
       displayName: Build and push an image to container registry
